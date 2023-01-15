@@ -37,18 +37,14 @@ namespace EE {
             };
 
             struct {
-                u32 r0 : 2; // ?
-                EXCEPTION_CODE r1 : 5;
-                u32 r2 : 3; // ?
-                u32 r3 : 1;
-                u32 r4 : 1;
-                u32 r5 : 3; // ?
-                u32 r6 : 1;
-                ERROR_CODE r7 : 3;
-                u32 r8 : 9; // ?
-                u32 r9 : 2;
-                u32 r10 : 1;
-                u32 r11 : 1;
+                EXCEPTION_CODE exception_code : 5;
+                u32 intc_ip : 1;
+                u32 dmac_ip : 1;
+                u32 cop0_ip : 1;
+                ERROR_CODE error_code : 3;
+                u32 cop_cue : 2;
+                u32 bd2 : 1;
+                u32 bd : 1;
             };
         };
 
@@ -67,54 +63,45 @@ namespace EE {
             };
 
             struct {
-                u32 r0 : 1;
-                u32 r1 : 1;
-                u32 r2 : 1;
-                KSU r3 : 2;
-                u32 r4 : 5; // ?
-                u32 r5 : 1;
-                u32 r6 : 1;
-                u32 r7 : 1;
-                u32 r8 : 2; // ?
-                u32 r9 : 1;
-                u32 r10 : 1;
-                u32 r11 : 1;
-                CH r12 : 1;
-                u32 r13 : 3; // ?
-                u32 r14 : 1;
-                u32 r15 : 1;
-                u32 r16 : 4; // ?
-                u32 r17 : 4;
+                u32 ie : 1;
+                u32 exl : 1;
+                u32 erl : 1;
+                KSU ksu : 2;
+                u32 int0 : 1; u32 int1 : 1;
+                u32 bem : 1;
+                u32 int5 : 1;
+                u32 eie : 1;
+                u32 edi : 1;
+                CH ch : 1;
+                u32 bev : 1;
+                u32 dev : 1;
+                u32 cop_use : 4;
             };
         };
 
-        u32 r0;
-        u32 r1;
-        u32 r2; u32 r3;
-        u32 r4;
-        u32 r5;
-        u32 r6;
-        // ?
-        u32 r8;
-        u32 r9;
-        u32 r10;
-        u32 r11;
-        STATUS r12;
-        CAUSE r13;
-        u32 r14;
-        u32 r15;
-        u32 r16;
-        // ?
-        u32 r23;
-        u32 r24;
-        u32 r25;
-        // ?
-        u32 r28;
-        u32 r29;
-        u32 r30;
+        u32 index;
+        u32 random;
+        u32 entryLo0; u32 entryLo1;
+        u32 context;
+        u32 page_mask;
+        u32 wired;
+        u32 badVAddr;
+        u32 count;
+        u32 entryHi;
+        u32 compare;
+        STATUS status;
+        CAUSE cause;
+        u32 epc;
+        u32 prid;
+        u32 config;
+        u32 badPAddr;
+        u32 debug;
+        u32 perf;
+        u32 tagLo; u32 tagHi;
+        u32 errorEpc;
 
         STATUS::KSU privilege_level() {
-            return r12.r1 || r12.r2 ? STATUS::KSU::KERNEL : r12.r3;
+            return status.erl || status.exl ? STATUS::KSU::KERNEL : status.ksu;
         }
     };
 }
